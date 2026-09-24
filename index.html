@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Design System - Esport CSS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container nav__inner">
+      <a href="#" class="nav__logo">ELIX<span>TV</span></a>
+      <ul class="nav__links">
+        <li><a href="#" class="active">Accueil</a></li>
+        <li><a href="#">Tournois</a></li>
+        <li><a href="#">Classement</a></li>
+        <li><a href="#">Équipes</a></li>
+      </ul>
+      <button class="btn btn--primary btn--sm">Se connecter</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container hero__content animate-in">
+      <div class="hero__eyebrow">Saison Finale 2026</div>
+      <h1 class="headline-hero">SOYEZ<br><span class="text-accent">DE LA PARTIE</span></h1>
+      <p style="margin-block: var(--space-6);">Rejoignez l'élite de la compétition esport mondiale. Participez aux tournois majeurs, affrontez les meilleures équipes et décrochez le cashprize.</p>
+      <div style="display: flex; gap: var(--space-4);">
+        <a href="#" class="btn btn--primary">S'inscrire au tournoi</a>
+        <a href="#" class="btn btn--outline">Voir le stream</a>
+      </div>
+    </div>
+  </header>
+
+  <hr class="divider">
+
+  <main class="container">
+
+    <!-- Direct Scoreboard -->
+    <section>
+      <div class="flex-between" style="margin-bottom: var(--space-6);">
+        <h2 class="section-title">Match en Direct</h2>
+        <span class="badge badge--live">LIVE</span>
+      </div>
+
+      <div class="scoreboard">
+        <div class="scoreboard__team">
+          <span class="scoreboard__team-name">CYBER SAMURAI</span>
+          <span class="scoreboard__score scoreboard__score--winner">13</span>
+        </div>
+        <div class="scoreboard__vs">VS</div>
+        <div class="scoreboard__team">
+          <span class="scoreboard__team-name">NEON TITANS</span>
+          <span class="scoreboard__score">09</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grille de statistiques -->
+    <section>
+      <div class="grid-4">
+        <div class="card">
+          <div class="stat-value">128 K</div>
+          <div class="stat-label">Spectateurs Simultanés</div>
+        </div>
+        <div class="card">
+          <div class="stat-value">$250,000</div>
+          <div class="stat-label">Cashprize Total</div>
+        </div>
+        <div class="card">
+          <div class="stat-value">64</div>
+          <div class="stat-label">Équipes Qualifiées</div>
+        </div>
+        <div class="card">
+          <div class="stat-value">4.8 GB</div>
+          <div class="stat-label">Bande Passante Mégabit</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cartes Tournois & Équipes -->
+    <section>
+      <h2 class="section-title">Tournois en cours</h2>
+      <div class="grid-3" style="margin-top: var(--space-6);">
+        
+        <div class="card--tournament">
+          <div class="badge badge--live" style="margin-bottom: var(--space-3);">En cours</div>
+          <h3>Grand Finals 2026</h3>
+          <p class="text-muted" style="margin-block: var(--space-2);">BO5 · Serveur EU Ouest</p>
+          <div class="prize">$100,000</div>
+          <div style="margin-top: var(--space-4);">
+            <div class="progress-bar">
+              <div class="progress-bar__fill" style="width: 75%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card--tournament">
+          <div class="badge badge--upcoming" style="margin-bottom: var(--space-3);">Demain · 20:00</div>
+          <h3>Championship Qualifiers</h3>
+          <p class="text-muted" style="margin-block: var(--space-2);">BO3 · Open Bracket</p>
+          <div class="prize">$25,000</div>
+          <div style="margin-top: var(--space-4);">
+            <div class="progress-bar">
+              <div class="progress-bar__fill" style="width: 30%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card--tournament">
+          <div class="badge badge--ended" style="margin-bottom: var(--space-3);">Terminé</div>
+          <h3>Rookie Showdown</h3>
+          <p class="text-muted" style="margin-block: var(--space-2);">BO1 · Amateurs</p>
+          <div class="prize">$5,000</div>
+          <div style="margin-top: var(--space-4);">
+            <div class="progress-bar">
+              <div class="progress-bar__fill" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Joueurs / Cartes Profil -->
+    <section>
+      <h2 class="section-title">Joueurs Vedettes</h2>
+      <div class="grid-4" style="margin-top: var(--space-6);">
+        
+        <div class="card card--player">
+          <div class="avatar"></div>
+          <h3>Vortex</h3>
+          <div class="role">Duellist</div>
+          <p class="text-muted" style="margin-top: var(--space-2);">K/D: 1.45</p>
+        </div>
+
+        <div class="card card--player">
+          <div class="avatar"></div>
+          <h3>Cipher</h3>
+          <div class="role">Duellist</div>
+          <p class="text-muted" style="margin-top: var(--space-2);">K/D: 1.12</p>
+        </div>
+
+        <div class="card card--player">
+          <div class="avatar"></div>
+          <h3>Specter</h3>
+          <div class="role">Sentinel</div>
+          <p class="text-muted" style="margin-top: var(--space-2);">K/D: 1.68</p>
+        </div>
+
+        <div class="card card--player">
+          <div class="avatar"></div>
+          <h3>Aegis</h3>
+          <div class="role">Smoker</div>
+          <p class="text-muted" style="margin-top: var(--space-2);">K/D: 1.05</p>
+        </div>
+
+        <div class="card card--player">
+          <div class="avatar"></div>
+          <h3>Aegis</h3>
+          <div class="role">Initiateur</div>
+          <p class="text-muted" style="margin-top: var(--space-2);">K/D: 1.05</p>
+          </div>
+
+      </div>
+    </section>
+
+    <!-- Tableau de classement & Chat en direct -->
+    <section>
+      <div class="grid-2">
+        
+        <!-- Classement -->
+        <div>
+          <h2 class="section-title">Classement Général</h2>
+          <table class="leaderboard" style="margin-top: var(--space-6);">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Équipe</th>
+                <th>Victoires</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="rank rank--1">01</td>
+                <td class="team-name">Cyber Samurai</td>
+                <td class="text-mono">18 - 2</td>
+                <td><span class="badge badge--win">Qualifié</span></td>
+              </tr>
+              <tr>
+                <td class="rank rank--2">02</td>
+                <td class="team-name">Neon Titans</td>
+                <td class="text-mono">15 - 5</td>
+                <td><span class="badge badge--win">Qualifié</span></td>
+              </tr>
+              <tr>
+                <td class="rank rank--3">03</td>
+                <td class="team-name">Shadow Syndicate</td>
+                <td class="text-mono">12 - 8</td>
+                <td><span class="badge badge--loss">Éliminé</span></td>
+              </tr>
+              <tr>
+                <td class="rank">04</td>
+                <td class="team-name">Apex Predators</td>
+                <td class="text-mono">10 - 10</td>
+                <td><span class="badge badge--loss">Éliminé</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Feed du Chat -->
+        <div>
+          <h2 class="section-title">Chat Stream</h2>
+          <div class="chat-feed" style="margin-top: var(--space-6);">
+            <div class="chat-message">
+              <span class="chat-message__username">Gamer_01:</span>
+              <span class="chat-message__text">Quel shot incroyable de Vortex à la manche 3 !</span>
+            </div>
+            <div class="chat-message">
+              <span class="chat-message__username">CyberFan:</span>
+              <span class="chat-message__text">GG Samurai ! C'est plié pour Neon Titans.</span>
+            </div>
+            <div class="chat-message">
+              <span class="chat-message__username">EsportMod:</span>
+              <span class="chat-message__text">Rappel : Merci de rester courtois dans le chat.</span>
+            </div>
+            <div class="chat-message">
+              <span class="chat-message__username">PixelHunter:</span>
+              <span class="chat-message__text">La finale commence dans combien de temps ?</span>
+            </div>
+            <div class="chat-message">
+              <span class="chat-message__username">ApexKing:</span>
+              <span class="chat-message__text">LET'S GOOOOO !!! 🔥🔥🔥</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Boutons & Tags UI -->
+    <section>
+      <h2 class="section-title">Composants UI</h2>
+      
+      <div style="margin-top: var(--space-6); display: flex; flex-wrap: wrap; gap: var(--space-4);">
+        <button class="btn btn--primary">Bouton Principal</button>
+        <button class="btn btn--outline">Bouton Contour</button>
+        <button class="btn btn--danger">Bouton Danger</button>
+        <button class="btn btn--primary btn--sm">Petit Bouton</button>
+      </div>
+
+      <div style="margin-top: var(--space-6); display: flex; gap: var(--space-2);">
+        <span class="tag active">VALORANT</span>
+        <span class="tag">CS2</span>
+        <span class="tag">LEAGUE OF LEGENDS</span>
+        <span class="tag">ROCKET LEAGUE</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: var(--space-24);">
+    <div class="container flex-between">
+      <div>
+        <div class="footer__logo">APEX<span>ARENA</span></div>
+        <p class="text-muted">Système de design compétitif eSport.</p>
+      </div>
+      <div>
+        <p class="text-muted">© 2026 Apex Arena. Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

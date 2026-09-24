@@ -1,0 +1,16 @@
+# Ignorer un fichier spécifique
+.env
+
+# Ignorer un dossier entier et tout son contenu
+node_modules/
+dist/
+.vscode/
+
+# Ignorer tous les fichiers ayant une extension spécifique
+*.log
+*.tmp
+
+# Ignorer un fichier spécifique uniquement à la racine du projet
+/config.json
+
+# Exception : ne pas ignorer un fichier précis (précédé d'un !)
