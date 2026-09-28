@@ -1,6 +1,6 @@
 /* ============================================================
    ESPORT.CSS — Système de design compétitif
-   Palette : Nuit profonde · Cyan électrique · Blanc signal
+   Palette : Nuit profonde · Rouge électrique · Blanc signal
    Typo    : Rajdhani (titres) · Inter (corps)
    ============================================================ */
 
@@ -14,7 +14,7 @@
   --bg-raised:    #141b26;
   --bg-overlay:   #1c2433;
 
-  --accent-cyan:   #ff0000d3;
+  --accent-red:   #ff0000d3;
   --accent-dim:   #00b8cc;
   --accent-glow:  rgba(0, 229, 255, 0.15);
 
@@ -59,7 +59,7 @@
   --radius-lg: 8px;
 
   /* Ombres */
-  --shadow-cyan: 0 0 24px rgba(0, 229, 255, 0.2);
+  --shadow-red: 0 0 24px rgba(0, 229, 255, 0.2);
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.6);
 }
 
@@ -90,7 +90,7 @@ img, video {
 }
 
 a {
-  color: var(--accent-cyan);
+  color: var(--accent-red);
   text-decoration: none;
   transition: color 0.15s ease;
 }
@@ -115,11 +115,11 @@ p {
   color: var(--text-secondary);
 }
 
-.text-accent   { color: var(--accent-cyan); }
+.text-accent   { color: var(--accent-red); }
 .text-muted    { color: var(--text-muted); font-size: var(--size-sm); }
 .text-mono     { font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
 
-/* Titre héros avec reflet cyan */
+/* Titre héros avec reflet red */
 .headline-hero {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 7vw, var(--size-3xl));
@@ -135,7 +135,7 @@ p {
   font-family: var(--font-display);
   font-size: var(--size-2xl);
   font-weight: 700;
-  color: var(--accent-cyan);
+  color: var(--accent-red);
   line-height: 1;
 }
 
@@ -224,7 +224,7 @@ section {
   letter-spacing: 0.06em;
 }
 
-.nav__logo span { color: var(--accent-cyan); }
+.nav__logo span { color: var(--accent-red); }
 
 .nav__links {
   display: flex;
@@ -242,7 +242,7 @@ section {
 
 .nav__links a:hover,
 .nav__links a.active {
-  color: var(--accent-cyan);
+  color: var(--accent-red);
 }
 
 /* ── Sections héros ──────────────────────────────────────── */
@@ -279,7 +279,7 @@ section {
   gap: var(--space-3);
   font-size: var(--size-sm);
   font-weight: 600;
-  color: var(--accent-cyan);
+  color: var(--accent-red);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: var(--space-6);
@@ -290,7 +290,7 @@ section {
   display: block;
   width: 32px;
   height: 2px;
-  background: var(--accent-cyan);
+  background: var(--accent-red);
 }
 
 /* ── Cartes ──────────────────────────────────────────────── */
@@ -304,14 +304,14 @@ section {
 
 .card:hover {
   border-color: var(--border-active);
-  box-shadow: var(--shadow-cyan);
+  box-shadow: var(--shadow-red);
 }
 
 /* Carte tournoi */
 .card--tournament {
   position: relative;
   background: var(--bg-raised);
-  border-left: 3px solid var(--accent-cyan);
+  border-left: 3px solid var(--accent-red);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
   padding: var(--space-6);
 }
@@ -343,7 +343,7 @@ section {
 .card--player .role {
   font-size: var(--size-xs);
   font-weight: 600;
-  color: var(--accent-cyan);
+  color: var(--accent-red);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-top: var(--space-1);
@@ -431,7 +431,7 @@ section {
 .btn:active { transform: scale(0.98); }
 
 .btn--primary {
-  background: var(--accent-cyan);
+  background: var(--accent-red);
   color: var(--bg-void);
 }
 .btn--primary:hover {
@@ -442,12 +442,12 @@ section {
 
 .btn--outline {
   background: transparent;
-  color: var(--accent-cyan);
-  border: 1.5px solid var(--accent-cyan);
+  color: var(--accent-red);
+  border: 1.5px solid var(--accent-red);
 }
 .btn--outline:hover {
   background: var(--accent-glow);
-  color: var(--accent-cyan);
+  color: var(--accent-red);
 }
 
 .btn--danger {
@@ -497,7 +497,7 @@ section {
 
 .badge--upcoming {
   background: rgba(0, 229, 255, 0.1);
-  color: var(--accent-cyan);
+  color: var(--accent-red);
   border: 1px solid var(--border-subtle);
 }
 
@@ -520,7 +520,7 @@ section {
 
 .progress-bar__fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-dim), var(--accent-cyan));
+  background: linear-gradient(90deg, var(--accent-dim), var(--accent-red));
   border-radius: 2px;
   transition: width 0.4s ease;
 }
@@ -545,7 +545,7 @@ section {
   display: block;
   width: 48px;
   height: 3px;
-  background: var(--accent-cyan);
+  background: var(--accent-red);
   margin-top: var(--space-3);
 }
 
@@ -584,7 +584,7 @@ section {
   line-height: 1;
 }
 
-.scoreboard__score--winner { color: var(--accent-cyan); }
+.scoreboard__score--winner { color: var(--accent-red); }
 
 .scoreboard__vs {
   font-family: var(--font-display);
@@ -617,7 +617,7 @@ section {
 
 .chat-message__username {
   font-weight: 600;
-  color: var(--accent-cyan);
+  color: var(--accent-red);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -643,7 +643,7 @@ section {
 
 .tag:hover, .tag.active {
   border-color: var(--border-active);
-  color: var(--accent-cyan);
+  color: var(--accent-red);
 }
 
 /* ── Footer ──────────────────────────────────────────────── */
@@ -663,7 +663,7 @@ section {
   margin-bottom: var(--space-4);
 }
 
-.footer__logo span { color: var(--accent-cyan); }
+.footer__logo span { color: var(--accent-red); }
 
 /* ── Animations ──────────────────────────────────────────── */
 @keyframes pulse-live {
@@ -718,7 +718,7 @@ section {
   overflow-x: auto;
   padding-bottom: var(--space-4);
   scrollbar-width: thin;
-  scrollbar-color: var(--accent-cyan) transparent;
+  scrollbar-color: var(--accent-red) transparent;
 }
 
 .grid-4:has(.card--player) .card--player {
