@@ -1,6 +1,6 @@
 /* ============================================================
    ESPORT.CSS — Système de design compétitif
-   Palette : Nuit profonde · Rouge électrique · Blanc signal
+   Palette : Nuit indigo · Contre-jour orange · Feuillage corail & violet
    Typo    : Rajdhani (titres) · Inter (corps)
    ============================================================ */
 
@@ -8,26 +8,37 @@
 
 /* ── Tokens ─────────────────────────────────────────────── */
 :root {
-  /* Couleurs */
-  --bg-void:      #050810;
-  --bg-surface:   #0d1117;
-  --bg-raised:    #141b26;
-  --bg-overlay:   #1c2433;
+  /* Fonds — bleu nuit profond des coins de l'image */
+  --bg-void:      #0a0820;
+  --bg-surface:   #120e2e;
+  --bg-raised:    #1b1540;
+  --bg-overlay:   #282058;
 
-  --accent-red:   #ff0000d3;
-  --accent-dim:   #00b8cc;
-  --accent-glow:  rgba(0, 229, 255, 0.15);
+  /* Accent principal — le contour lumineux orange du ninja */
+  --accent-red:   #ef3b36;          /* rouge des feuilles */
+  --accent-hover: #ff5f55;
+  --accent-dim:   #b3232b;
+  --accent-glow:  rgba(239, 59, 54, 0.15);
 
+  /* Accents secondaires — feuillage */
+  --accent-violet:  #6b4dff;        /* feuilles violettes */
+  --accent-blue:    #3d3bd6;        /* feuilles bleues */
+  --accent-magenta: #c2407a;        /* feuilles rose-magenta */
+  --violet-rgb:     107, 77, 255;
+  --accent-rgb:     239, 59, 54;
+
+  /* Signaux */
   --signal-red:   #ff2d55;
-  --signal-green: #00e676;
-  --signal-gold:  #ffc400;
+  --signal-green: #3ddc84;
+  --signal-gold:  #ffc766;          /* yeux lumineux */
 
-  --text-primary:   #f0f4f8;
-  --text-secondary: #8899aa;
-  --text-muted:     #4a5568;
+  /* Texte — blanc chaud + lavande */
+  --text-primary:   #f5ece2;
+  --text-secondary: #a99fd0;
+  --text-muted:     #625a94;
 
-  --border-subtle: rgba(0, 229, 255, 0.12);
-  --border-active: rgba(0, 229, 255, 0.45);
+  --border-subtle: rgba(var(--violet-rgb), 0.18);
+  --border-active: rgba(var(--accent-rgb), 0.5);
 
   /* Typographie */
   --font-display: 'Rajdhani', 'Arial Narrow', sans-serif;
@@ -59,8 +70,12 @@
   --radius-lg: 8px;
 
   /* Ombres */
-  --shadow-red: 0 0 24px rgba(0, 229, 255, 0.2);
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.6);
+  --shadow-red:  0 0 24px rgba(var(--accent-rgb), 0.25);
+  --shadow-card: 0 4px 24px rgba(4, 2, 16, 0.75);
+
+  /* Dégradés signature */
+  --gradient-ember: linear-gradient(90deg, var(--accent-dim), var(--accent-red), #ff6b4a);
+  --gradient-jungle: linear-gradient(135deg, var(--accent-blue), var(--accent-violet), var(--accent-magenta));
 }
 
 /* ── Reset ───────────────────────────────────────────────── */
@@ -84,6 +99,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+::selection {
+  background: rgba(var(--accent-rgb), 0.35);
+  color: var(--text-primary);
+}
+
 img, video {
   max-width: 100%;
   display: block;
@@ -94,7 +114,7 @@ a {
   text-decoration: none;
   transition: color 0.15s ease;
 }
-a:hover { color: var(--text-primary); }
+a:hover { color: var(--signal-gold); }
 
 /* ── Typographie ─────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
@@ -119,7 +139,7 @@ p {
 .text-muted    { color: var(--text-muted); font-size: var(--size-sm); }
 .text-mono     { font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
 
-/* Titre héros avec reflet red */
+/* Titre héros avec contre-jour orange */
 .headline-hero {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 7vw, var(--size-3xl));
@@ -127,9 +147,16 @@ p {
   line-height: 1.0;
   letter-spacing: 0.03em;
   color: var(--text-primary);
-  text-shadow: 0 0 40px rgba(0, 229, 255, 0.35);
+  text-shadow:
+    0 0 40px rgba(var(--accent-rgb), 0.45),
+    0 0 80px rgba(var(--violet-rgb), 0.25);
 }
-
+.nav__logo-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 40%;
+  object-fit: cover;
+}
 /* Ligne de score / stat large */
 .stat-value {
   font-family: var(--font-display);
@@ -137,6 +164,7 @@ p {
   font-weight: 700;
   color: var(--accent-red);
   line-height: 1;
+  text-shadow: 0 0 18px rgba(var(--accent-rgb), 0.35);
 }
 
 .stat-label {
@@ -201,7 +229,7 @@ section {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(5, 8, 16, 0.85);
+  background: rgba(10, 8, 32, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-subtle);
   height: 60px;
@@ -217,11 +245,15 @@ section {
 }
 
 .nav__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);        
   font-family: var(--font-display);
   font-size: var(--size-lg);
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: 0.06em;
+  line-height: 1;
 }
 
 .nav__logo span { color: var(--accent-red); }
@@ -252,6 +284,13 @@ section {
   align-items: center;
   position: relative;
   overflow: hidden;
+  /* Halo orange au centre + jungle violette sur les bords, comme l'image */
+  background:
+    radial-gradient(ellipse 45% 55% at 50% 45%, rgba(var(--accent-rgb), 0.18), transparent 70%),
+    radial-gradient(ellipse 60% 70% at 0% 100%, rgba(var(--violet-rgb), 0.22), transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 0%, rgba(61, 59, 214, 0.22), transparent 70%),
+    radial-gradient(ellipse 40% 40% at 5% 10%, rgba(224, 71, 58, 0.16), transparent 70%),
+    var(--bg-void);
 }
 
 /* Fond scanlines subtil */
@@ -263,8 +302,8 @@ section {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 229, 255, 0.015) 2px,
-    rgba(0, 229, 255, 0.015) 4px
+    rgba(var(--violet-rgb), 0.03) 2px,
+    rgba(var(--violet-rgb), 0.03) 4px
   );
   pointer-events: none;
   z-index: 0;
@@ -283,14 +322,6 @@ section {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: var(--space-6);
-}
-
-.hero__eyebrow::before {
-  content: '';
-  display: block;
-  width: 32px;
-  height: 2px;
-  background: var(--accent-red);
 }
 
 /* ── Cartes ──────────────────────────────────────────────── */
@@ -321,6 +352,7 @@ section {
   font-size: var(--size-xl);
   font-weight: 700;
   color: var(--signal-gold);
+  text-shadow: 0 0 16px rgba(255, 199, 102, 0.35);
 }
 
 /* Carte joueur / équipe */
@@ -338,6 +370,12 @@ section {
   margin-inline: auto;
   margin-bottom: var(--space-4);
   overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card--player:hover .avatar {
+  border-color: var(--accent-red);
+  box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.4);
 }
 
 .card--player .role {
@@ -347,6 +385,7 @@ section {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-top: var(--space-1);
+}
 
 .player-row {
   display: flex;
@@ -360,7 +399,7 @@ section {
 .player-row .card--player {
   flex: 0 0 220px; /* Force chaque carte à faire 220px de large sans se comprimer */
 }
-}
+
 
 /* ── Tableau des scores / classement ─────────────────────── */
 .leaderboard {
@@ -384,7 +423,7 @@ section {
 .leaderboard td {
   padding: var(--space-4);
   color: var(--text-secondary);
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(var(--violet-rgb), 0.08);
   vertical-align: middle;
 }
 
@@ -402,8 +441,8 @@ section {
 }
 
 .leaderboard .rank--1 { color: var(--signal-gold); }
-.leaderboard .rank--2 { color: #c0c0c0; }
-.leaderboard .rank--3 { color: #cd7f32; }
+.leaderboard .rank--2 { color: #c6c0e0; }
+.leaderboard .rank--3 { color: #e0703f; }
 
 .leaderboard .team-name {
   font-weight: 600;
@@ -435,8 +474,8 @@ section {
   color: var(--bg-void);
 }
 .btn--primary:hover {
-  background: #33ebff;
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+  background: var(--accent-hover);
+  box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.5);
   color: var(--bg-void);
 }
 
@@ -456,7 +495,7 @@ section {
   border: 1.5px solid var(--signal-red);
 }
 .btn--danger:hover {
-  background: rgba(255, 45, 85, 0.1);
+  background: rgba(255, 71, 71, 0.1);
   color: var(--signal-red);
 }
 
@@ -478,9 +517,9 @@ section {
 }
 
 .badge--live {
-  background: rgba(255, 45, 85, 0.15);
+  background: rgba(255, 71, 71, 0.15);
   color: var(--signal-red);
-  border: 1px solid rgba(255, 45, 85, 0.3);
+  border: 1px solid rgba(255, 71, 71, 0.3);
 }
 
 /* Point pulsant LIVE */
@@ -496,19 +535,19 @@ section {
 }
 
 .badge--upcoming {
-  background: rgba(0, 229, 255, 0.1);
+  background: rgba(var(--accent-rgb), 0.1);
   color: var(--accent-red);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
 }
 
 .badge--ended {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(var(--violet-rgb), 0.08);
   color: var(--text-muted);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(var(--violet-rgb), 0.12);
 }
 
-.badge--win  { background: rgba(0, 230, 118, 0.12); color: var(--signal-green); }
-.badge--loss { background: rgba(255, 45, 85, 0.12); color: var(--signal-red); }
+.badge--win  { background: rgba(61, 220, 132, 0.12); color: var(--signal-green); }
+.badge--loss { background: rgba(255, 71, 71, 0.12); color: var(--signal-red); }
 
 /* ── Barre de progression ────────────────────────────────── */
 .progress-bar {
@@ -520,7 +559,7 @@ section {
 
 .progress-bar__fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-dim), var(--accent-red));
+  background: var(--gradient-ember);
   border-radius: 2px;
   transition: width 0.4s ease;
 }
@@ -540,22 +579,15 @@ section {
   margin-bottom: var(--space-2);
 }
 
-.section-title::after {
-  content: '';
-  display: block;
-  width: 48px;
-  height: 3px;
-  background: var(--accent-red);
-  margin-top: var(--space-3);
-}
-
 /* ── Score en direct ─────────────────────────────────────── */
 .scoreboard {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-8);
-  background: var(--bg-surface);
+  background:
+    radial-gradient(ellipse at center, rgba(var(--accent-rgb), 0.08), transparent 70%),
+    var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: var(--space-8) var(--space-12);
@@ -584,7 +616,10 @@ section {
   line-height: 1;
 }
 
-.scoreboard__score--winner { color: var(--accent-red); }
+.scoreboard__score--winner {
+  color: var(--accent-red);
+  text-shadow: 0 0 24px rgba(var(--accent-rgb), 0.45);
+}
 
 .scoreboard__vs {
   font-family: var(--font-display);
@@ -621,6 +656,10 @@ section {
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+/* Variation des pseudos avec les couleurs du feuillage */
+.chat-message:nth-child(3n+2) .chat-message__username { color: var(--accent-violet); }
+.chat-message:nth-child(3n+3) .chat-message__username { color: var(--accent-magenta); }
 
 .chat-message__text {
   color: var(--text-secondary);
@@ -711,6 +750,7 @@ section {
     transition-duration: 0.01ms !important;
   }
 }
+
 .grid-4:has(.card--player) {
   display: flex !important;
   flex-direction: row !important;
