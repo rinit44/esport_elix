@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion · Esport ELIXTV</title>
+  <link rel="icon" type="image/png" href="img/elix_logo.jpg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="nav__logo">
+        ELIX<span>TV</span>
+        <img src="img/elix_logo.jpg" alt="Logo ELIXTV" class="nav__logo-img">
+      </a>
+      <ul class="nav__links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="tournois.html">Tournois</a></li>
+        <li><a href="classement.html">Classement</a></li>
+        <li><a href="equipes.html">Équipes</a></li>
+      </ul>
+      <a href="connexion.html" class="btn btn--primary btn--sm">Se connecter</a>
+    </div>
+  </nav>
+
+  <main class="hero auth">
+    <div class="container hero__content animate-in">
+
+      <div class="auth__brand">
+        <img src="img/elix_logo.jpg" alt="Logo ELIXTV">
+        <h1 class="headline-hero" style="font-size: var(--size-2xl);">BON <span class="text-accent">RETOUR</span></h1>
+        <p style="margin-top: var(--space-3);">Retrouve ton équipe et tes inscriptions en un clic.</p>
+      </div>
+
+      <div class="form-card form-card--narrow">
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="login" role="tab">Connexion</button>
+          <button class="tab" data-tab="register" role="tab">Créer un compte</button>
+        </div>
+
+        <!-- Connexion -->
+        <form class="form" id="login-form" data-panel="login" novalidate>
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input class="input" type="email" id="login-email" placeholder="toi@exemple.com" required autocomplete="email">
+            <span class="field__error">Entre une adresse email valide.</span>
+          </div>
+          <div class="field">
+            <label for="login-password">Mot de passe</label>
+            <input class="input" type="password" id="login-password" placeholder="••••••••" required minlength="8" autocomplete="current-password">
+            <span class="field__error">Le mot de passe contient au moins 8 caractères.</span>
+          </div>
+          <div class="flex-between" style="flex-wrap: wrap; gap: var(--space-3);">
+            <label class="checkbox"><input type="checkbox"> Se souvenir de moi</label>
+            <a href="#" class="text-muted">Mot de passe oublié ?</a>
+          </div>
+          <button type="submit" class="btn btn--primary btn--block">Se connecter</button>
+          <div class="alert alert--success" hidden data-success>
+            <h3>Connexion réussie</h3>
+            <p>Mode démo : aucune donnée n'est encore enregistrée.</p>
+          </div>
+        </form>
+
+        <!-- Création de compte -->
+        <form class="form" id="register-form" data-panel="register" novalidate hidden>
+          <div class="field">
+            <label for="reg-pseudo">Pseudo</label>
+            <input class="input" type="text" id="reg-pseudo" placeholder="Vortex" required minlength="3" maxlength="20" autocomplete="nickname">
+            <span class="field__error">Ton pseudo doit faire entre 3 et 20 caractères.</span>
+          </div>
+          <div class="field">
+            <label for="reg-email">Email</label>
+            <input class="input" type="email" id="reg-email" placeholder="toi@exemple.com" required autocomplete="email">
+            <span class="field__error">Entre une adresse email valide.</span>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="reg-password">Mot de passe</label>
+              <input class="input" type="password" id="reg-password" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+              <span class="field__error">Au moins 8 caractères.</span>
+            </div>
+            <div class="field">
+              <label for="reg-confirm">Confirmation</label>
+              <input class="input" type="password" id="reg-confirm" placeholder="••••••••" required data-match="reg-password" autocomplete="new-password">
+              <span class="field__error">Les mots de passe ne correspondent pas.</span>
+            </div>
+          </div>
+          <div class="field">
+            <label class="checkbox"><input type="checkbox" required> J'accepte le règlement de la league ElixTV.</label>
+            <span class="field__error">Tu dois accepter le règlement.</span>
+          </div>
+          <button type="submit" class="btn btn--primary btn--block">Créer mon compte</button>
+          <div class="alert alert--success" hidden data-success>
+            <h3>Compte créé</h3>
+            <p>Mode démo : aucune donnée n'est encore enregistrée.</p>
+          </div>
+        </form>
+
+        <p class="form-footer" style="margin-top: var(--space-6);">
+          Tu veux participer à un tournoi ? <a href="inscription.html">Inscris ton équipe</a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container flex-between">
+      <div>
+        <div class="footer__logo">Elix<span>TV</span></div>
+        <p class="text-muted">League compétitive Esport.</p>
+      </div>
+      <div>
+        <p class="text-muted">© 2026 ElixTV. Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/forms.js"></script>
+</body>
+</html>

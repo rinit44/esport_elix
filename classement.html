@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classement · Esport ELIXTV</title>
+  <link rel="icon" type="image/png" href="img/elix_logo.jpg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="nav__logo">
+        ELIX<span>TV</span>
+        <img src="img/elix_logo.jpg" alt="Logo ELIXTV" class="nav__logo-img">
+      </a>
+      <ul class="nav__links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="tournois.html">Tournois</a></li>
+        <li><a href="classement.html" class="active">Classement</a></li>
+        <li><a href="equipes.html">Équipes</a></li>
+      </ul>
+      <a href="connexion.html" class="btn btn--primary btn--sm">Se connecter</a>
+    </div>
+  </nav>
+
+  <!-- En tête -->
+  <header class="hero hero--page">
+    <div class="container hero__content animate-in">
+      <div class="hero__eyebrow">Saison 2026</div>
+      <h1 class="headline-hero">CLASSEMENT <span class="text-accent">GÉNÉRAL</span></h1>
+      <p>Trois points par victoire. Les deux premières équipes de la saison décrochent leur place directe pour la grande finale.</p>
+    </div>
+  </header>
+
+  <hr class="divider">
+
+  <main class="container">
+
+    <!-- Podium -->
+    <section>
+      <h2 class="section-title" style="margin-bottom: var(--space-8);">Le podium</h2>
+      <div class="podium" id="podium"></div>
+    </section>
+
+    <!-- Tableau complet -->
+    <section>
+      <div class="toolbar">
+        <h2 class="section-title">Toutes les équipes</h2>
+        <div class="tag-group" id="region-filters">
+          <button class="tag active" data-region="all">Toutes</button>
+          <button class="tag" data-region="Europe">Europe</button>
+          <button class="tag" data-region="Amérique">Amérique</button>
+          <button class="tag" data-region="Asie">Asie</button>
+        </div>
+      </div>
+
+      <div class="leaderboard-scroll">
+        <table class="leaderboard">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Équipe</th>
+              <th>Région</th>
+              <th>Victoires</th>
+              <th>Défaites</th>
+              <th>Ratio</th>
+              <th>Points</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: var(--space-24);">
+    <div class="container flex-between">
+      <div>
+        <div class="footer__logo">Elix<span>TV</span></div>
+        <p class="text-muted">League compétitive Esport.</p>
+      </div>
+      <div>
+        <p class="text-muted">© 2026 ElixTV. Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/classement.js"></script>
+</body>
+</html>

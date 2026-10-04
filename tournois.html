@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournois · Esport ELIXTV</title>
+  <link rel="icon" type="image/png" href="img/elix_logo.jpg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/brackets-viewer@1.9.1/dist/brackets-viewer.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="nav__logo">
+        ELIX<span>TV</span>
+        <img src="img/elix_logo.jpg" alt="Logo ELIXTV" class="nav__logo-img">
+      </a>
+      <ul class="nav__links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="tournois.html" class="active">Tournois</a></li>
+        <li><a href="classement.html">Classement</a></li>
+        <li><a href="equipes.html">Équipes</a></li>
+      </ul>
+      <a href="connexion.html" class="btn btn--primary btn--sm">Se connecter</a>
+    </div>
+  </nav>
+
+  <!-- En tête -->
+  <header class="hero hero--page">
+    <div class="container hero__content animate-in">
+      <div class="hero__eyebrow">Saison 2026</div>
+      <h1 class="headline-hero">LES <span class="text-accent">TOURNOIS</span></h1>
+      <p>Suivez chaque match en élimination directe, de la première manche jusqu'à la grande finale. Un seul faux pas et l'équipe rentre à la maison.</p>
+    </div>
+  </header>
+
+  <hr class="divider">
+
+  <main class="container">
+
+    <!-- Liste des tournois -->
+    <section>
+      <div class="toolbar">
+        <h2 class="section-title">Tous les tournois</h2>
+        <div class="tag-group" id="tournament-filters">
+          <button class="tag active" data-filter="all">Tous</button>
+          <button class="tag" data-filter="live">En cours</button>
+          <button class="tag" data-filter="upcoming">À venir</button>
+          <button class="tag" data-filter="ended">Terminés</button>
+        </div>
+      </div>
+      <div class="grid-3" id="tournament-list"></div>
+    </section>
+
+    <!-- Arbre du tournoi -->
+    <section id="arbre">
+      <div class="flex-between" style="margin-bottom: var(--space-2); flex-wrap: wrap; gap: var(--space-4);">
+        <h2 class="section-title">Arbre du tournoi</h2>
+        <button class="btn btn--outline btn--sm" id="bracket-reset">Réinitialiser les scores</button>
+      </div>
+      <p class="text-muted" id="bracket-subtitle" style="margin-bottom: var(--space-6);">Chargement de l'arbre...</p>
+
+      <div class="bracket-wrap">
+        <div class="brackets-viewer" id="bracket"></div>
+        <div class="bracket-empty" id="bracket-empty" hidden></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Saisie d'un score -->
+  <dialog class="modal" id="score-modal">
+    <form method="dialog" id="score-form">
+      <div class="hero__eyebrow" style="margin-bottom: var(--space-2);" id="score-round">Match</div>
+      <h3>Saisir le score</h3>
+      <div class="modal__teams">
+        <div class="field">
+          <label for="score-1" id="score-1-label">Équipe 1</label>
+          <input class="input" type="number" min="0" max="99" id="score-1" required>
+        </div>
+        <div class="scoreboard__vs" style="padding-bottom: var(--space-4);">VS</div>
+        <div class="field">
+          <label for="score-2" id="score-2-label">Équipe 2</label>
+          <input class="input" type="number" min="0" max="99" id="score-2" required>
+        </div>
+      </div>
+      <p class="modal__error" id="score-error"></p>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--outline btn--sm" id="score-cancel">Annuler</button>
+        <button type="submit" class="btn btn--primary btn--sm">Valider</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: var(--space-24);">
+    <div class="container flex-between">
+      <div>
+        <div class="footer__logo">Elix<span>TV</span></div>
+        <p class="text-muted">League compétitive Esport.</p>
+      </div>
+      <div>
+        <p class="text-muted">© 2026 ElixTV. Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Force la langue française de brackets-viewer avant son chargement -->
+  <script>try { localStorage.setItem('i18nextLng', 'fr'); } catch (e) {}</script>
+  <script src="https://cdn.jsdelivr.net/npm/brackets-viewer@1.9.1/dist/brackets-viewer.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/tournois.js"></script>
+</body>
+</html>

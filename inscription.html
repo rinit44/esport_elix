@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription · Esport ELIXTV</title>
+  <link rel="icon" type="image/png" href="img/elix_logo.jpg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="nav__logo">
+        ELIX<span>TV</span>
+        <img src="img/elix_logo.jpg" alt="Logo ELIXTV" class="nav__logo-img">
+      </a>
+      <ul class="nav__links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="tournois.html" class="active">Tournois</a></li>
+        <li><a href="classement.html">Classement</a></li>
+        <li><a href="equipes.html">Équipes</a></li>
+      </ul>
+      <a href="connexion.html" class="btn btn--primary btn--sm">Se connecter</a>
+    </div>
+  </nav>
+
+  <!-- En tête -->
+  <header class="hero hero--page">
+    <div class="container hero__content animate-in">
+      <div class="hero__eyebrow">Inscriptions ouvertes</div>
+      <h1 class="headline-hero">INSCRIS <span class="text-accent">TON ÉQUIPE</span></h1>
+      <p>Cinq joueurs, un capitaine, une ambition. Remplis le formulaire pour réserver ta place dans le prochain tournoi.</p>
+    </div>
+  </header>
+
+  <hr class="divider">
+
+  <main class="container">
+    <section>
+      <div class="layout-aside" id="inscription-layout">
+
+        <form class="form form-card" id="inscription-form" novalidate>
+
+          <!-- Tournoi -->
+          <div class="form-legend"><span>01</span> Tournoi</div>
+          <div class="field">
+            <label for="ins-tournoi">Choisis ton tournoi</label>
+            <select class="input" id="ins-tournoi" required>
+              <option value="">Sélectionner un tournoi</option>
+            </select>
+            <span class="field__error">Choisis un tournoi.</span>
+          </div>
+
+          <!-- Équipe -->
+          <div class="form-legend"><span>02</span> Équipe</div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="ins-nom">Nom de l'équipe</label>
+              <input class="input" type="text" id="ins-nom" placeholder="Cyber Samurai" required minlength="3" maxlength="30">
+              <span class="field__error">Entre 3 et 30 caractères.</span>
+            </div>
+            <div class="field">
+              <label for="ins-tag">Tag</label>
+              <input class="input" type="text" id="ins-tag" placeholder="CSM" required pattern="[A-Za-z0-9]{2,4}" maxlength="4" style="text-transform: uppercase;">
+              <span class="field__error">2 à 4 lettres ou chiffres.</span>
+            </div>
+            <div class="field">
+              <label for="ins-region">Région</label>
+              <select class="input" id="ins-region" required>
+                <option value="">Sélectionner une région</option>
+                <option>Europe</option>
+                <option>Amérique</option>
+                <option>Asie</option>
+              </select>
+              <span class="field__error">Choisis une région.</span>
+            </div>
+            <div class="field">
+              <label for="ins-discord">Discord du capitaine</label>
+              <input class="input" type="text" id="ins-discord" placeholder="vortex#0001" required>
+              <span class="field__error">Indique un contact Discord.</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="ins-email">Email du capitaine</label>
+            <input class="input" type="email" id="ins-email" placeholder="capitaine@exemple.com" required>
+            <span class="field__error">Entre une adresse email valide.</span>
+          </div>
+
+          <!-- Joueurs -->
+          <div class="form-legend"><span>03</span> Joueurs</div>
+          <div id="roster-fields" style="display: flex; flex-direction: column; gap: var(--space-4);"></div>
+
+          <!-- Validation -->
+          <div class="field">
+            <label class="checkbox"><input type="checkbox" id="ins-rules" required> Toute l'équipe accepte le règlement du tournoi et s'engage à être présente à l'heure du check in.</label>
+            <span class="field__error">Tu dois accepter le règlement.</span>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--block">Valider l'inscription</button>
+        </form>
+
+        <!-- Récapitulatif du tournoi choisi -->
+        <aside class="layout-aside__side">
+          <div class="card--tournament" id="tournoi-recap">
+            <h3>Aucun tournoi</h3>
+            <p class="text-muted" style="margin-top: var(--space-2);">Choisis un tournoi pour voir ses détails.</p>
+          </div>
+          <div class="card">
+            <h4 style="margin-bottom: var(--space-3);">Bon à savoir</h4>
+            <ul class="roster" style="color: var(--text-secondary);">
+              <li>Cinq titulaires obligatoires</li>
+              <li>Check in 30 min avant le début</li>
+              <li>Élimination simple</li>
+            </ul>
+          </div>
+        </aside>
+
+      </div>
+
+      <!-- Confirmation -->
+      <div class="alert alert--success" id="inscription-success" hidden style="max-width: 720px; margin-inline: auto;">
+        <h3>Inscription envoyée</h3>
+        <p id="inscription-success-text"></p>
+        <p class="text-muted" style="margin-top: var(--space-3);">Mode démo : aucune donnée n'est encore enregistrée.</p>
+        <div style="display: flex; gap: var(--space-4); margin-top: var(--space-6); flex-wrap: wrap;">
+          <a href="tournois.html" class="btn btn--primary">Voir les tournois</a>
+          <a href="inscription.html" class="btn btn--outline">Nouvelle inscription</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: var(--space-24);">
+    <div class="container flex-between">
+      <div>
+        <div class="footer__logo">Elix<span>TV</span></div>
+        <p class="text-muted">League compétitive Esport.</p>
+      </div>
+      <div>
+        <p class="text-muted">© 2026 ElixTV. Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/forms.js"></script>
+</body>
+</html>

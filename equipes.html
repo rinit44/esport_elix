@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Équipes · Esport ELIXTV</title>
+  <link rel="icon" type="image/png" href="img/elix_logo.jpg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="nav__logo">
+        ELIX<span>TV</span>
+        <img src="img/elix_logo.jpg" alt="Logo ELIXTV" class="nav__logo-img">
+      </a>
+      <ul class="nav__links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="tournois.html">Tournois</a></li>
+        <li><a href="classement.html">Classement</a></li>
+        <li><a href="equipes.html" class="active">Équipes</a></li>
+      </ul>
+      <a href="connexion.html" class="btn btn--primary btn--sm">Se connecter</a>
+    </div>
+  </nav>
+
+  <!-- En tête -->
+  <header class="hero hero--page">
+    <div class="container hero__content animate-in">
+      <div class="hero__eyebrow">Saison 2026</div>
+      <h1 class="headline-hero">LES <span class="text-accent">ÉQUIPES</span></h1>
+      <p>Seize formations venues d'Europe, d'Amérique et d'Asie se disputent le titre. Découvrez leurs joueurs et leurs résultats de la saison.</p>
+      <div style="display: flex; gap: var(--space-4); margin-top: var(--space-6);">
+        <a href="inscription.html" class="btn btn--primary">Inscrire mon équipe</a>
+      </div>
+    </div>
+  </header>
+
+  <hr class="divider">
+
+  <main class="container">
+    <section>
+      <div class="toolbar">
+        <h2 class="section-title">Toutes les équipes</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center;">
+          <input type="search" class="input" id="team-search" placeholder="Rechercher une équipe ou un joueur" style="width: 280px;">
+          <div class="tag-group" id="region-filters">
+            <button class="tag active" data-region="all">Toutes</button>
+            <button class="tag" data-region="Europe">Europe</button>
+            <button class="tag" data-region="Amérique">Amérique</button>
+            <button class="tag" data-region="Asie">Asie</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3" id="team-grid"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: var(--space-24);">
+    <div class="container flex-between">
+      <div>
+        <div class="footer__logo">Elix<span>TV</span></div>
+        <p class="text-muted">League compétitive Esport.</p>
+      </div>
+      <div>
+        <p class="text-muted">© 2026 ElixTV. Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/equipes.js"></script>
+</body>
+</html>
