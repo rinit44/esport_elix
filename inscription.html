@@ -6,6 +6,8 @@
   <title>Inscription · Esport ELIXTV</title>
   <link rel="icon" type="image/png" href="img/elix_logo.jpg">
   <link rel="stylesheet" href="style.css">
+  <script src="session.js"></script>
+  <script src="js/auth.js"></script>
 </head>
 <body>
 
@@ -29,9 +31,9 @@
   <!-- En tête -->
   <header class="hero hero--page">
     <div class="container hero__content animate-in">
-      <div class="hero__eyebrow">Inscriptions ouvertes</div>
-      <h1 class="headline-hero">INSCRIS <span class="text-accent">TON ÉQUIPE</span></h1>
-      <p>Cinq joueurs, un capitaine, une ambition. Remplis le formulaire pour réserver ta place dans le prochain tournoi.</p>
+      <div class="hero__eyebrow">Espace organisateur</div>
+      <h1 class="headline-hero">INSCRIRE <span class="text-accent">UNE ÉQUIPE</span></h1>
+      <p>Cinq joueurs, un capitaine. Inscris une équipe dans un de tes tournois aux inscriptions ouvertes.</p>
     </div>
   </header>
 
@@ -99,6 +101,7 @@
           </div>
 
           <button type="submit" class="btn btn--primary btn--block">Valider l'inscription</button>
+          <p class="field__error" id="inscription-error" role="alert" style="display: block;"></p>
         </form>
 
         <!-- Récapitulatif du tournoi choisi -->
@@ -121,9 +124,8 @@
 
       <!-- Confirmation -->
       <div class="alert alert--success" id="inscription-success" hidden style="max-width: 720px; margin-inline: auto;">
-        <h3>Inscription envoyée</h3>
+        <h3>Inscription enregistrée</h3>
         <p id="inscription-success-text"></p>
-        <p class="text-muted" style="margin-top: var(--space-3);">Mode démo : aucune donnée n'est encore enregistrée.</p>
         <div style="display: flex; gap: var(--space-4); margin-top: var(--space-6); flex-wrap: wrap;">
           <a href="tournois.html" class="btn btn--primary">Voir les tournois</a>
           <a href="inscription.html" class="btn btn--outline">Nouvelle inscription</a>
@@ -140,7 +142,7 @@
         <p class="text-muted">League compétitive Esport.</p>
       </div>
       <div>
-        <p class="text-muted">© 2026 ElixTV. Tous droits réservés.</p>
+        <p class="text-muted">© 2026 ElixTV. Tous droits réservés. · <a href="cgu.html">CGU</a></p>
       </div>
     </div>
   </footer>

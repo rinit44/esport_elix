@@ -1,5 +1,5 @@
-/* Formulaires (connexion + inscription au tournoi).
-   Pour l'instant tout est visuel : rien n'est envoyé ni enregistré. */
+/* Formulaires : connexion et inscription d'une équipe à un tournoi
+   (réservée aux organisateurs et aux admins). Les données partent vers l'API Flask. */
 
 (function () {
   // ── Validation générique ────────────────────────────────
@@ -28,18 +28,39 @@
   }
 
   // ── Page connexion ──────────────────────────────────────
-  const tabs = document.querySelectorAll('[data-tab]');
-  tabs.forEach((tab) => tab.addEventListener('click', () => {
-    tabs.forEach((t) => t.classList.toggle('active', t === tab));
-    document.querySelectorAll('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== tab.dataset.tab; });
-  }));
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    const loginError = document.getElementById('login-error');
 
-  for (const id of ['login-form', 'register-form']) {
-    const form = document.getElementById(id);
-    if (!form) continue;
-    form.addEventListener('submit', (e) => {
+    // On ne revient que vers une page du site (pas de redirection externe)
+    function nextUrl() {
+      const next = new URLSearchParams(location.search).get('next') || '';
+      return /^\/(?![/\\])/.test(next) ? next : '/';
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      form.querySelector('[data-success]').hidden = !validateForm(form);
+      loginError.textContent = '';
+      if (!validateForm(loginForm)) return;
+
+      const btn = loginForm.querySelector('[type="submit"]');
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('login-email').value.trim(),
+            password: document.getElementById('login-password').value,
+            remember: document.getElementById('login-remember').checked,
+          }),
+        });
+        if (res.ok) { location.href = nextUrl(); return; }
+        loginError.textContent = (await res.json().catch(() => ({}))).erreur || 'Connexion impossible.';
+      } catch (err) {
+        loginError.textContent = 'Serveur injoignable.';
+      }
+      btn.disabled = false;
     });
   }
 
@@ -47,37 +68,51 @@
   const insForm = document.getElementById('inscription-form');
   if (!insForm) return;
 
-  const { tournois, ROLES } = window.ELIX;
-  const open = tournois.filter((t) => t.inscriptions);
+  const { ROLES, api, esc, loadTournois } = window.ELIX;
+  let open = []; // tournois que l'utilisateur gère et dont les inscriptions sont ouvertes
 
   const select = document.getElementById('ins-tournoi');
   const recap = document.getElementById('tournoi-recap');
   const recapDefault = recap.innerHTML;
 
-  select.insertAdjacentHTML('beforeend',
-    open.map((t) => `<option value="${t.id}">${t.nom} · ${t.badge}</option>`).join(''));
-
-  const preselect = new URLSearchParams(location.search).get('tournoi');
-  if (open.some((t) => String(t.id) === preselect)) select.value = preselect;
-
   function renderRecap() {
     const t = open.find((x) => String(x.id) === select.value);
     if (!t) { recap.innerHTML = recapDefault; return; }
 
-    const left = t.places - t.equipes.length;
+    const left = t.places - t.nb_equipes;
     recap.innerHTML = `
-      <div><span class="badge badge--upcoming" style="margin-bottom: var(--space-3);">${t.badge}</span></div>
-      <h3>${t.nom}</h3>
-      <p class="text-muted" style="margin-block: var(--space-2);">${t.format} · ${t.info}</p>
-      <div class="prize">${t.cashprize}</div>
+      <div><span class="badge badge--upcoming" style="margin-bottom: var(--space-3);">${esc(t.badge)}</span></div>
+      <h3>${esc(t.nom)}</h3>
+      <p class="text-muted" style="margin-block: var(--space-2);">${esc(t.format)} · ${esc(t.info)}</p>
+      <div class="prize">${t.prize}</div>
       <div style="margin-top: var(--space-4);">
-        <div class="progress-bar"><div class="progress-bar__fill" style="width: ${(t.equipes.length / t.places) * 100}%;"></div></div>
+        <div class="progress-bar"><div class="progress-bar__fill" style="width: ${(t.nb_equipes / t.places) * 100}%;"></div></div>
       </div>
       <p class="text-muted" style="margin-top: var(--space-3);">${left} place${left > 1 ? 's' : ''} restante${left > 1 ? 's' : ''} sur ${t.places}</p>`;
   }
 
+  async function fillTournois() {
+    try {
+      open = (await loadTournois()).filter((t) => t.peut_gerer && t.inscriptions && t.nb_equipes < t.places);
+    } catch (err) {
+      open = [];
+    }
+
+    select.insertAdjacentHTML('beforeend',
+      open.map((t) => `<option value="${t.id}">${esc(t.nom)} · ${esc(t.badge)}</option>`).join(''));
+    if (!open.length) {
+      recap.innerHTML = `<h3>Aucun tournoi</h3>
+        <p class="text-muted" style="margin-top: var(--space-2);">Aucun de tes tournois n'a d'inscriptions ouvertes.</p>`;
+      return;
+    }
+
+    const preselect = new URLSearchParams(location.search).get('tournoi');
+    if (open.some((t) => String(t.id) === preselect)) select.value = preselect;
+    renderRecap();
+  }
+
   select.addEventListener('change', renderRecap);
-  renderRecap();
+  fillTournois();
 
   // Cinq lignes joueur : pseudo + rôle
   const roleOptions = [...new Set(ROLES)];
@@ -94,34 +129,41 @@
       </select>
     </div>`).join('');
 
-  insForm.addEventListener('submit', (e) => {
+  const insError = document.getElementById('inscription-error');
+
+  insForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    insError.textContent = '';
     if (!validateForm(insForm)) return;
 
     const t = open.find((x) => String(x.id) === select.value);
     const nom = document.getElementById('ins-nom').value.trim();
     const tag = document.getElementById('ins-tag').value.trim().toUpperCase();
-    const email = document.getElementById('ins-email').value.trim();
 
-    // Données prêtes à être envoyées à la future base locale
-    const inscription = {
-      tournoiId: t.id,
-      equipe: {
-        nom,
-        tag,
-        region: document.getElementById('ins-region').value,
-        discord: document.getElementById('ins-discord').value.trim(),
-        email,
-        joueurs: ROLES.map((_, i) => ({
-          pseudo: document.getElementById(`ins-joueur-${i}`).value.trim(),
-          role: document.getElementById(`ins-role-${i}`).value,
-        })),
-      },
+    const equipe = {
+      nom,
+      tag,
+      region: document.getElementById('ins-region').value,
+      discord: document.getElementById('ins-discord').value.trim(),
+      email: document.getElementById('ins-email').value.trim(),
+      joueurs: ROLES.map((_, i) => ({
+        pseudo: document.getElementById(`ins-joueur-${i}`).value.trim(),
+        role: document.getElementById(`ins-role-${i}`).value,
+      })),
     };
-    console.log('Inscription (démo) :', inscription);
+
+    const btn = insForm.querySelector('[type="submit"]');
+    btn.disabled = true;
+    try {
+      await api(`/tournois/${t.id}/equipes`, { method: 'POST', body: { equipe } });
+    } catch (err) {
+      insError.textContent = err.message;
+      btn.disabled = false;
+      return;
+    }
 
     document.getElementById('inscription-success-text').textContent =
-      `${nom} [${tag}] est inscrite au tournoi ${t.nom}. La confirmation sera envoyée à ${email}.`;
+      `${nom} [${tag}] est inscrite au tournoi ${t.nom}.`;
     document.getElementById('inscription-layout').hidden = true;
     const success = document.getElementById('inscription-success');
     success.hidden = false;

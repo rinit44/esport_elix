@@ -1,12 +1,12 @@
 /* Page Tournois : liste des tournois + arbre en élimination simple.
-   brackets-manager.js génère et met à jour l'arbre (données en mémoire),
-   brackets-viewer.js l'affiche. */
+   Les matchs viennent de la base (API Flask). brackets-manager.js reconstruit
+   l'arbre en mémoire à partir de ces matchs, brackets-viewer.js l'affiche. */
 
 (async function () {
   const MANAGER_URL = 'https://cdn.jsdelivr.net/npm/brackets-manager@1.11.1/+esm';
   const MEMORY_DB_URL = 'https://cdn.jsdelivr.net/npm/brackets-memory-db@1.0.6/+esm';
 
-  const { tournois, byName } = window.ELIX;
+  const { api, esc, loadTournois, loadTournoi } = window.ELIX;
 
   const STATUS_BADGE = { live: 'badge--live', upcoming: 'badge--upcoming', ended: 'badge--ended' };
   const ROUND_NAMES = ['Finale', 'Demies', 'Quarts', 'Huitièmes', 'Seizièmes'];
@@ -16,7 +16,6 @@
   const bracketEl = document.getElementById('bracket');
   const emptyEl = document.getElementById('bracket-empty');
   const subtitle = document.getElementById('bracket-subtitle');
-  const resetBtn = document.getElementById('bracket-reset');
 
   const modal = document.getElementById('score-modal');
   const scoreForm = document.getElementById('score-form');
@@ -24,12 +23,23 @@
   const score2 = document.getElementById('score-2');
   const scoreError = document.getElementById('score-error');
 
+  let tournois;
+  try {
+    tournois = await loadTournois();
+  } catch (err) {
+    list.innerHTML = `<p class="empty-state">${esc(err.message)}</p>`;
+    subtitle.textContent = '';
+    return;
+  }
+
   const params = new URLSearchParams(location.search);
   let selected = tournois.find((t) => t.id === Number(params.get('id')))
     || tournois.find((t) => t.statut === 'live')
     || tournois[0];
 
   // ── Liste des tournois ──────────────────────────────────
+  const activeFilter = () => filters.querySelector('.tag.active').dataset.filter;
+
   function renderList(filter) {
     list.innerHTML = '';
     const visible = tournois.filter((t) => filter === 'all' || t.statut === filter);
@@ -41,19 +51,19 @@
 
     for (const t of visible) {
       const card = document.createElement('article');
-      card.className = 'card--tournament is-clickable' + (t.id === selected.id ? ' is-selected' : '');
+      card.className = 'card--tournament is-clickable' + (t.id === selected?.id ? ' is-selected' : '');
       card.innerHTML = `
-        <div><span class="badge ${STATUS_BADGE[t.statut]}" style="margin-bottom: var(--space-3);">${t.badge}</span></div>
-        <h3>${t.nom}</h3>
-        <p class="text-muted" style="margin-block: var(--space-2);">${t.format} · ${t.info}</p>
-        <div class="prize">${t.cashprize}</div>
+        <div><span class="badge ${STATUS_BADGE[t.statut]}" style="margin-bottom: var(--space-3);">${esc(t.badge)}</span></div>
+        <h3>${esc(t.nom)}</h3>
+        <p class="text-muted" style="margin-block: var(--space-2);">${esc(t.format)} · ${esc(t.info)}</p>
+        <div class="prize">${t.prize}</div>
         <div style="margin-top: var(--space-4);">
           <div class="progress-bar"><div class="progress-bar__fill" style="width: ${t.progression}%;"></div></div>
         </div>
         <div class="card--tournament__meta">
-          <span class="text-muted">${t.equipes.length} / ${t.places} équipes</span>
-          ${t.inscriptions
-            ? `<a href="inscription.html?tournoi=${t.id}" class="btn btn--primary btn--sm">S'inscrire</a>`
+          <span class="text-muted">${t.nb_equipes} / ${t.places} équipes</span>
+          ${t.inscriptions && t.peut_gerer
+            ? `<a href="inscription.html?tournoi=${t.id}" class="btn btn--primary btn--sm">Inscrire</a>`
             : `<span class="btn btn--outline btn--sm">Voir l'arbre</span>`}
         </div>`;
 
@@ -65,6 +75,13 @@
     }
   }
 
+  // Recharge la liste après une modification (statut, progression)
+  async function refreshList() {
+    tournois = await loadTournois();
+    selected = tournois.find((t) => t.id === selected.id) || selected;
+    renderList(activeFilter());
+  }
+
   filters.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-filter]');
     if (!btn) return;
@@ -73,6 +90,11 @@
   });
 
   renderList('all');
+  if (!selected) {
+    subtitle.textContent = '';
+    showEmpty('Aucun tournoi', '<p>Aucun tournoi n\'a encore été créé.</p>');
+    return;
+  }
 
   // ── Chargement de brackets-manager ──────────────────────
   let BracketsManager, InMemoryDatabase;
@@ -86,69 +108,51 @@
     return;
   }
 
-  // Un manager (et sa base en mémoire) par tournoi
-  const brackets = new Map();
-
-  function scoreFor(format, seed) {
-    if (format === 'BO1') return [13, 5 + (seed % 7)];
-    if (format === 'BO5') return [3, seed % 3];
-    return [2, seed % 2];
-  }
-
-  // Joue automatiquement des matchs pour simuler un tournoi en cours ou terminé
-  async function playMatch(manager, match, participants, format) {
-    const p1 = participants.find((p) => p.id === match.opponent1.id);
-    const p2 = participants.find((p) => p.id === match.opponent2.id);
-    const strength = (p) => (byName(p.name) || { points: 0 }).points;
-
-    let firstWins = strength(p1) >= strength(p2);
-    if ((match.id * 7 + match.number) % 5 === 0) firstWins = !firstWins; // une petite surprise de temps en temps
-
-    const [w, l] = scoreFor(format, match.id);
-    await manager.update.match({
-      id: match.id,
-      opponent1: { score: firstWins ? w : l, result: firstWins ? 'win' : 'loss' },
-      opponent2: { score: firstWins ? l : w, result: firstWins ? 'loss' : 'win' },
-    });
-  }
-
-  async function simulate(manager, stageId, t, fullRounds, extraMatches) {
-    const { round } = await manager.get.stageData(stageId);
-    const rounds = [...round].sort((a, b) => a.number - b.number);
-
-    for (let i = 0; i < rounds.length && i <= fullRounds; i++) {
-      const data = await manager.get.stageData(stageId);
-      let matches = data.match
-        .filter((m) => m.round_id === rounds[i].id)
-        .sort((a, b) => a.number - b.number);
-      if (i === fullRounds) matches = matches.slice(0, extraMatches);
-
-      for (const m of matches) await playMatch(manager, m, data.participant, t.format);
-    }
-  }
-
-  async function getBracket(t) {
-    if (brackets.has(t.id)) return brackets.get(t.id);
-
+  // Reconstruit l'arbre en mémoire : têtes de série puis matchs joués, tour par tour
+  async function buildStage(detail) {
     const manager = new BracketsManager(new InMemoryDatabase());
+    const seeding = Array(detail.places).fill(null); // null = place vide (qualification directe)
+    for (const e of detail.equipes) {
+      if (e.seed && e.seed <= detail.places) seeding[e.seed - 1] = e.nom;
+    }
+
     const stage = await manager.create.stage({
-      tournamentId: t.id,
-      name: t.nom,
+      tournamentId: detail.id,
+      name: detail.nom,
       type: 'single_elimination',
-      seeding: t.equipes,
-      settings: { seedOrdering: ['inner_outer'], size: t.places },
+      seeding,
+      settings: { seedOrdering: ['inner_outer'], size: detail.places },
     });
 
-    if (t.statut === 'ended') await simulate(manager, stage.id, t, Infinity, 0);
-    if (t.statut === 'live') await simulate(manager, stage.id, t, 1, 1);
+    const nomEquipe = (id) => detail.equipes.find((e) => e.id === id)?.nom;
+    const joues = detail.matchs.filter((m) => m.vainqueur_id && m.equipe1_id && m.equipe2_id);
 
-    const entry = { manager, stageId: stage.id };
-    brackets.set(t.id, entry);
-    return entry;
+    for (const m of joues) {
+      const data = await manager.get.stageData(stage.id);
+      const name = (pid) => data.participant.find((p) => p.id === pid)?.name;
+      const round = data.round.find((r) => r.number === m.tour);
+      const n1 = nomEquipe(m.equipe1_id);
+      const n2 = nomEquipe(m.equipe2_id);
+
+      // On retrouve le match par ses deux équipes : l'ordre des slots peut différer
+      const target = data.match.find((x) => x.round_id === round?.id
+        && [name(x.opponent1?.id), name(x.opponent2?.id)].includes(n1)
+        && [name(x.opponent1?.id), name(x.opponent2?.id)].includes(n2));
+      if (!target) continue;
+
+      const [a, b] = name(target.opponent1.id) === n1 ? [m.score1, m.score2] : [m.score2, m.score1];
+      await manager.update.match({
+        id: target.id,
+        opponent1: { score: a, result: a > b ? 'win' : 'loss' },
+        opponent2: { score: b, result: a > b ? 'loss' : 'win' },
+      });
+    }
+
+    return manager.get.stageData(stage.id);
   }
 
   // ── Affichage ───────────────────────────────────────────
-  let current = null; // { manager, data } du tournoi affiché
+  let current = null; // { detail, data } du tournoi affiché
 
   function showEmpty(title, bodyHtml) {
     bracketEl.hidden = true;
@@ -157,32 +161,66 @@
     emptyEl.innerHTML = `<h3>${title}</h3>${bodyHtml}`;
   }
 
+  // Arbre pas encore généré : équipes inscrites + actions de l'organisateur
+  function showPending(detail) {
+    current = null;
+    const nb = detail.equipes.length;
+    const tags = detail.equipes.map((e) => `<span class="tag">${esc(e.nom)}</span>`).join(' ');
+    const actions = [];
+    if (detail.peut_gerer && detail.inscriptions_ouvertes && nb < detail.places) {
+      actions.push(`<a href="inscription.html?tournoi=${detail.id}" class="btn btn--primary">Inscrire une équipe</a>`);
+    }
+    if (detail.peut_gerer && nb > detail.places / 2) {
+      actions.push('<button type="button" class="btn btn--outline" data-generate>Générer l\'arbre</button>');
+    }
+
+    subtitle.textContent = `${detail.nom} · ${detail.inscriptions_ouvertes ? 'inscriptions ouvertes' : 'arbre pas encore généré'}`;
+    showEmpty(
+      `${nb} / ${detail.places} équipes inscrites`,
+      `<p>${detail.peut_gerer
+        ? 'Génère l\'arbre une fois les inscriptions terminées (plus de la moitié des places remplies).'
+        : 'L\'arbre sera publié par l\'organisateur à la clôture des inscriptions.'}</p>
+       <div class="tag-group" style="justify-content: center; margin-block: var(--space-6);">${tags}</div>
+       <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">${actions.join('')}</div>
+       <p class="field__error" data-generate-error style="display: block; margin-top: var(--space-4);"></p>`
+    );
+
+    emptyEl.querySelector('[data-generate]')?.addEventListener('click', async (e) => {
+      e.target.disabled = true;
+      try {
+        await api(`/tournois/${detail.id}/arbre`, { method: 'POST' });
+        await refreshList();
+        await renderBracket();
+      } catch (err) {
+        emptyEl.querySelector('[data-generate-error]').textContent = err.message;
+        e.target.disabled = false;
+      }
+    });
+  }
+
   async function renderBracket() {
     const t = selected;
-    resetBtn.hidden = true;
-
-    // Inscriptions ouvertes : l'arbre n'existe pas encore
-    if (t.equipes.length < t.places) {
+    let detail;
+    try {
+      detail = await loadTournoi(t.id);
+    } catch (err) {
       current = null;
-      subtitle.textContent = `${t.nom} · inscriptions ouvertes`;
-      const tags = t.equipes.map((n) => `<span class="tag">${n}</span>`).join(' ');
-      showEmpty(
-        `${t.equipes.length} / ${t.places} équipes inscrites`,
-        `<p>L'arbre sera généré à la clôture des inscriptions.</p>
-         <div class="tag-group" style="justify-content: center; margin-block: var(--space-6);">${tags}</div>
-         <a href="inscription.html?tournoi=${t.id}" class="btn btn--primary">Inscrire mon équipe</a>`
-      );
+      showEmpty('Impossible de charger le tournoi', `<p>${esc(err.message)}</p>`);
       return;
     }
 
-    const { manager, stageId } = await getBracket(t);
-    const data = await manager.get.stageData(stageId);
-    current = { manager, data, stageId };
+    if (!detail.matchs.length) {
+      showPending(detail);
+      return;
+    }
+
+    const data = await buildStage(detail);
+    current = { detail, data };
 
     emptyEl.hidden = true;
     bracketEl.hidden = false;
-    resetBtn.hidden = false;
-    subtitle.textContent = `${t.nom} · ${t.format} · élimination simple. Clique sur un match pour saisir le score.`;
+    subtitle.textContent = `${detail.nom} · ${detail.format} · élimination simple.`
+      + (detail.peut_gerer ? ' Clique sur un match pour saisir le score.' : '');
 
     await window.bracketsViewer.render(
       {
@@ -207,30 +245,32 @@
 
   async function selectTournament(t) {
     selected = t;
-    renderList(filters.querySelector('.tag.active').dataset.filter);
+    renderList(activeFilter());
     await renderBracket();
     document.getElementById('arbre').scrollIntoView({ behavior: 'smooth' });
   }
 
-  resetBtn.addEventListener('click', async () => {
-    brackets.delete(selected.id);
-    await renderBracket();
-  });
-
-  // ── Saisie des scores ───────────────────────────────────
-  let editing = null;
+  // ── Saisie des scores (propriétaire du tournoi ou admin) ─
+  let editing = null; // { matchId, swap } : swap si l'équipe 1 de l'arbre est l'équipe 2 en base
 
   window.bracketsViewer.onMatchClicked = (match) => {
-    if (!current) return;
+    if (!current || !current.detail.peut_gerer) return;
     const m = current.data.match.find((x) => x.id === match.id);
     if (!m || m.opponent1?.id == null || m.opponent2?.id == null) return;
 
     const name = (id) => current.data.participant.find((p) => p.id === id).name;
-    const roundIdx = current.data.round.find((r) => r.id === m.round_id).number;
-    const roundCount = current.data.round.length;
+    const idOf = (nom) => current.detail.equipes.find((e) => e.nom === nom)?.id;
+    const round = current.data.round.find((r) => r.id === m.round_id);
+    const id1 = idOf(name(m.opponent1.id));
+    const id2 = idOf(name(m.opponent2.id));
 
-    editing = m;
-    document.getElementById('score-round').textContent = `${ROUND_NAMES[roundCount - roundIdx] || 'Tour ' + roundIdx} · Match ${m.number}`;
+    const dbMatch = current.detail.matchs.find((x) => x.tour === round.number
+      && [x.equipe1_id, x.equipe2_id].includes(id1) && [x.equipe1_id, x.equipe2_id].includes(id2));
+    if (!dbMatch) return;
+
+    editing = { matchId: dbMatch.id, swap: dbMatch.equipe1_id !== id1 };
+    const roundCount = current.data.round.length;
+    document.getElementById('score-round').textContent = `${ROUND_NAMES[roundCount - round.number] || 'Tour ' + round.number} · Match ${m.number}`;
     document.getElementById('score-1-label').textContent = name(m.opponent1.id);
     document.getElementById('score-2-label').textContent = name(m.opponent2.id);
     score1.value = m.opponent1.score ?? '';
@@ -256,19 +296,19 @@
       return;
     }
 
+    const [s1, s2] = editing.swap ? [b, a] : [a, b];
     try {
-      await current.manager.update.match({
-        id: editing.id,
-        opponent1: { score: a, result: a > b ? 'win' : 'loss' },
-        opponent2: { score: b, result: a > b ? 'loss' : 'win' },
+      await api(`/tournois/${selected.id}/matchs/${editing.matchId}`, {
+        method: 'PUT',
+        body: { score1: s1, score2: s2 },
       });
     } catch (err) {
-      console.error(err);
-      scoreError.textContent = 'Ce match ne peut plus être modifié : le tour suivant a déjà commencé.';
+      scoreError.textContent = err.message;
       return;
     }
 
     modal.close();
+    await refreshList();
     await renderBracket();
   });
 

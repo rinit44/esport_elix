@@ -14,3 +14,9 @@ dist/
 /config.json
 
 # Exception : ne pas ignorer un fichier précis (précédé d'un !)
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/

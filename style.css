@@ -1262,3 +1262,27 @@ select.input option { background: var(--bg-surface); }
 
   .leaderboard-scroll { overflow-x: auto; }
 }
+
+/* ── Pages de texte (CGU) ─────────────────────────────── */
+.legal section {
+  padding-block: var(--space-8);
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  scroll-margin-top: var(--space-24);
+}
+.legal section:last-child { border-bottom: none; }
+.legal h2 { font-size: var(--size-xl); margin-bottom: var(--space-4); }
+.legal h3 { font-size: var(--size-lg, 1.1rem); margin-block: var(--space-6) var(--space-2); }
+.legal p { margin-bottom: var(--space-3); }
+.legal ul,
+.legal ol { color: var(--text-secondary); padding-left: var(--space-6); margin-bottom: var(--space-3); }
+.legal li { margin-bottom: var(--space-2); line-height: 1.6; }
+.legal strong { color: var(--text-primary); }
+.legal__toc {
+  margin-top: var(--space-8);
+  padding: var(--space-6);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md, 8px);
+}
+.legal__toc h2 { font-size: var(--size-lg, 1.1rem); }
+.legal__toc ol { columns: 2; column-gap: var(--space-8); margin: 0; }
+@media (max-width: 640px) { .legal__toc ol { columns: 1; } }
