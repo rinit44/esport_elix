@@ -21,7 +21,7 @@ def init_pool(config):
     global _pool
     _pool = pooling.MySQLConnectionPool(
         pool_name="elix",
-        pool_size=5,
+        pool_size=config.DB_POOL_SIZE,
         host=config.DB_HOST,
         port=config.DB_PORT,
         user=config.DB_USER,
@@ -37,6 +37,9 @@ def init_pool(config):
 def transaction():
     """Curseur (lignes en dict) : commit à la fin, rollback si exception."""
     cnx = _pool.get_connection()
+    # Une connexion restée inutilisée peut avoir été fermée par le serveur
+    # (PythonAnywhere coupe au bout de quelques minutes) : on la rouvre si besoin.
+    cnx.ping(reconnect=True, attempts=2, delay=0)
     cur = cnx.cursor(dictionary=True)
     try:
         yield cur

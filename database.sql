@@ -1,6 +1,14 @@
 -- ============================================================
 --  Base de données Esport ELIXTV (MySQL 8)
---  Import :  mysql -u root -p < database.sql
+--
+--  Le fichier s'importe dans une base existante (sur PythonAnywhere,
+--  la base se crée depuis l'onglet « Databases »).
+--
+--  En local (PowerShell) :
+--    mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS elix CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+--    mysql -u root -p --default-character-set=utf8mb4 elix -e "source database.sql"
+--
+--  ATTENTION : réimporter efface toutes les données existantes.
 --
 --  Rôles :
 --    admin        : tout + gestion des comptes
@@ -11,9 +19,10 @@
 --  par un admin (API /api/utilisateurs ou script create_user.py).
 -- ============================================================
 
-DROP DATABASE IF EXISTS elix;
-CREATE DATABASE elix CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE elix;
+SET NAMES utf8mb4;
+
+DROP VIEW IF EXISTS v_tournois, v_classement;
+DROP TABLE IF EXISTS matchs, tournoi_equipes, tournois, joueurs, equipes, utilisateurs;
 
 -- ── Comptes ─────────────────────────────────────────────────
 CREATE TABLE utilisateurs (
@@ -25,7 +34,7 @@ CREATE TABLE utilisateurs (
   actif              BOOLEAN      NOT NULL DEFAULT TRUE,  -- compte désactivé = connexion refusée
   derniere_connexion DATETIME     NULL,
   cree_le            DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ── Équipes et joueurs ──────────────────────────────────────
 CREATE TABLE equipes (
@@ -38,7 +47,7 @@ CREATE TABLE equipes (
   cree_par        INT UNSIGNED NULL,
   cree_le         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_equipes_createur FOREIGN KEY (cree_par) REFERENCES utilisateurs (id) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE joueurs (
   id        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -50,7 +59,7 @@ CREATE TABLE joueurs (
   CONSTRAINT uq_joueurs_position UNIQUE (equipe_id, position),
   CONSTRAINT uq_joueurs_pseudo   UNIQUE (equipe_id, pseudo),
   CONSTRAINT ck_joueurs_position CHECK (position BETWEEN 1 AND 5)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ── Tournois ────────────────────────────────────────────────
 CREATE TABLE tournois (
@@ -67,7 +76,7 @@ CREATE TABLE tournois (
   cree_le               DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_tournois_orga FOREIGN KEY (organisateur_id) REFERENCES utilisateurs (id) ON DELETE SET NULL,
   CONSTRAINT ck_tournois_places CHECK (places IN (4, 8, 16, 32))
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE tournoi_equipes (
   tournoi_id  INT UNSIGNED NOT NULL,
@@ -80,7 +89,7 @@ CREATE TABLE tournoi_equipes (
   CONSTRAINT fk_te_equipe  FOREIGN KEY (equipe_id)   REFERENCES equipes (id)      ON DELETE CASCADE,
   CONSTRAINT fk_te_auteur  FOREIGN KEY (inscrit_par) REFERENCES utilisateurs (id) ON DELETE SET NULL,
   CONSTRAINT uq_te_seed UNIQUE (tournoi_id, seed)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ── Matchs (élimination simple) ─────────────────────────────
 --  tour 1 = premier tour, le dernier tour est la finale.
@@ -101,7 +110,7 @@ CREATE TABLE matchs (
   CONSTRAINT fk_matchs_equipe2   FOREIGN KEY (equipe2_id)   REFERENCES equipes (id)  ON DELETE SET NULL,
   CONSTRAINT fk_matchs_vainqueur FOREIGN KEY (vainqueur_id) REFERENCES equipes (id)  ON DELETE SET NULL,
   CONSTRAINT uq_matchs_position UNIQUE (tournoi_id, tour, numero)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ── Vues ────────────────────────────────────────────────────
 -- Classement : 3 points par victoire, calculé à partir des matchs joués
