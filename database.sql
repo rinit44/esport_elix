@@ -1,8 +1,8 @@
 -- ============================================================
---  Base de données Esport ELIXTV (MySQL 8)
+--  Base de données Esport ELIXTV (MySQL 8 ou MariaDB)
 --
---  Le fichier s'importe dans une base existante (sur PythonAnywhere,
---  la base se crée depuis l'onglet « Databases »).
+--  Le fichier s'importe dans une base existante (sur alwaysdata,
+--  la base se crée depuis « Bases de données > MySQL »).
 --
 --  En local (PowerShell) :
 --    mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS elix CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"

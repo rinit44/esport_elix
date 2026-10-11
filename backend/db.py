@@ -38,7 +38,7 @@ def transaction():
     """Curseur (lignes en dict) : commit à la fin, rollback si exception."""
     cnx = _pool.get_connection()
     # Une connexion restée inutilisée peut avoir été fermée par le serveur
-    # (PythonAnywhere coupe au bout de quelques minutes) : on la rouvre si besoin.
+    # (les hébergeurs coupent souvent au bout de quelques minutes) : on la rouvre si besoin.
     cnx.ping(reconnect=True, attempts=2, delay=0)
     cur = cnx.cursor(dictionary=True)
     try:

@@ -5,7 +5,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# .env à la racine du projet, quel que soit le dossier de lancement (ex. PythonAnywhere)
+# .env à la racine du projet, quel que soit le dossier de lancement (ex. hébergeur)
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 
@@ -17,7 +17,7 @@ class Config:
     DB_USER = os.getenv("DB_USER", "root")
     DB_PASSWORD = os.getenv("DB_PASSWORD", "")
     DB_NAME = os.getenv("DB_NAME", "elix")
-    DB_POOL_SIZE = int(os.getenv("DB_POOL_SIZE", "5"))  # 2 sur PythonAnywhere gratuit
+    DB_POOL_SIZE = int(os.getenv("DB_POOL_SIZE", "5"))  # 2 chez un hébergeur gratuit (alwaysdata)
 
     # Cookie de session : illisible en JS, pas envoyé depuis un autre site
     SESSION_COOKIE_HTTPONLY = True
